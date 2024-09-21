@@ -1,0 +1,98 @@
+/*
+    The purpose of this program is to provide the user with the uitlity to make graphs of the sales of their stores. The user provides the necessary
+    data through text files and the program reads this data, providing the user with bar graphs of the performance of each of their stores in a 
+    separate file.
+*/
+// Includes any possibly relavant libraries using the standard namespace.
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <fstream>
+using namespace std;
+
+// The main function of our program.
+int main()
+{
+    // Makes input and output variables for the file stream library.
+    ifstream input;
+    ofstream output;
+
+    // Makes a string variable using c++ strings for the input file name.
+    string inputFileName;
+
+    // Makes the necessary variables for the store number and sales.
+    // Also makes a variable for the number of dots.
+    unsigned int storeNum;
+    long long int sales, dots;
+
+    // Takes as input the input file name.
+    cout << "Please enter the input file name.\n";
+    getline(cin, inputFileName);    
+
+    // Opens the input file for reading.
+    input.open(inputFileName);
+
+    // Opens the output file for writing.
+    output.open("saleschart.txt");
+
+    // Decides if the input file exists.
+    if (input)
+    {
+        // If the input file exists, decides if there is data in the file.
+        if (input >> storeNum >> sales)
+        {
+            // If there is data in the file, writes the header to the output file.
+            output << "SALES BAR CHART\n" << "(Each * equals 5,000 dollars)\n";
+            // Closes the input file so that the next time it is opened, it will start at the beginning.
+            input.close();
+        }
+        // Opens the input file for reading.
+        input.open(inputFileName);
+        // While the input file has data on the read position, assigns the first piece of data to storeNum and the second to sales.
+        while (input >> storeNum >> sales)
+        {
+            // Decides if the store number is 1-99 (inclusive).
+            if (storeNum >= 1 && storeNum <= 99)
+            {
+                // If the store number is valid, decides if there are sales.
+                if (sales >= 0)
+                {
+                    // If there are sales, calculates the number of dots needed to represent the sales data.
+                    dots = sales/5000;
+
+                    // Writes to the output file the required data,
+                    output << "Store " << setw(2) << right << storeNum << ": ";
+                    // For loop which is used to output the correct number of dots.
+                    for (int i = 0; i < dots; i++)
+                    {
+                        output << "*";
+                    }
+                    output << endl;
+                }
+                // If the store has no sales, skips the store. (Displays the error, doesn't write to file)
+                else
+                {
+                    cout << "Skipped store #" << storeNum << "." << endl;
+                }
+            }
+            // If the store is an invalid number, skips. (Displays the error, doesn't write to file)
+            else
+            {
+                cout << storeNum << " is not in the range 1 through 99." << endl;
+            }
+        }
+    }
+    // If the file could not be opened, displays the error.
+    else
+    {
+       cout <<  "\"" << inputFileName << "\"" << " could not be opened.\n";
+    }
+    // Closes the input file.   
+    input.close();
+    // Closes the output file.
+    output.close();
+
+    // Returns 0.
+    return 0;
+}
